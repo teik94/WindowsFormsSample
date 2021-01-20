@@ -66,10 +66,6 @@ namespace WindowsFormsApp2
             {
                 Calculate();
             }
-
-
-            
-
         }
 
         private void txtCount_TextChanged(object sender, EventArgs e)
