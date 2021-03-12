@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace WindowsFormsApp2
 {
-    class Profile
+    public class Product
     {
+        public string Code;
         public string Name;
+        public int Price;
+        public int Quantity;
+        public string Note;
     }
 }

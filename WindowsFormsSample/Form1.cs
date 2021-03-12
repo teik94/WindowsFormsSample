@@ -23,12 +23,12 @@ namespace WindowsFormsApp2
         public void Calculate()
         {
 
-            double number = Convert.ToDouble(textBox2.Text);
-            Profile pr = new Profile();
-            pr.Name = textBox2.Text;
+            //double number = Convert.ToDouble(textBox2.Text);
+            //Profile pr = new Profile();
+            //pr.Name = textBox2.Text;
 
-            listNumber.Add(number);
-            MessageBox.Show("Da nhap " + number);
+            //listNumber.Add(number);
+            //MessageBox.Show("Da nhap " + number);
         }
 
         private void Form1_Load(object sender, EventArgs e)
