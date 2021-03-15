@@ -56,10 +56,10 @@ namespace WindowsFormsApp2
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.button8 = new System.Windows.Forms.Button();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.button7 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.button8 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -160,7 +160,7 @@ namespace WindowsFormsApp2
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(507, 572);
+            this.tabPage3.Size = new System.Drawing.Size(785, 572);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -182,7 +182,7 @@ namespace WindowsFormsApp2
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(507, 572);
+            this.tabPage4.Size = new System.Drawing.Size(785, 572);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -365,6 +365,16 @@ namespace WindowsFormsApp2
             this.tabPage5.Text = "tabPage5";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(222, 29);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(75, 23);
+            this.button8.TabIndex = 3;
+            this.button8.Text = "Search";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
             // textBox6
             // 
             this.textBox6.Location = new System.Drawing.Point(102, 31);
@@ -391,16 +401,6 @@ namespace WindowsFormsApp2
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(773, 508);
             this.dataGridView1.TabIndex = 0;
-            // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(222, 29);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(75, 23);
-            this.button8.TabIndex = 3;
-            this.button8.Text = "Search";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // Form1
             // 

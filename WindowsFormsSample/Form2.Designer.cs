@@ -70,12 +70,14 @@ namespace WindowsFormsApp2
             this.label18 = new System.Windows.Forms.Label();
             this.btnLoad = new System.Windows.Forms.Button();
             this.btnImageBrowse = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSave
             // 
             this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSave.Location = new System.Drawing.Point(288, 365);
+            this.btnSave.Location = new System.Drawing.Point(288, 569);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(146, 53);
             this.btnSave.TabIndex = 0;
@@ -122,6 +124,7 @@ namespace WindowsFormsApp2
             this.txtImage.Name = "txtImage";
             this.txtImage.Size = new System.Drawing.Size(232, 20);
             this.txtImage.TabIndex = 1;
+            this.txtImage.TextChanged += new System.EventHandler(this.txtImage_TextChanged);
             // 
             // label2
             // 
@@ -236,7 +239,7 @@ namespace WindowsFormsApp2
             // 
             // txtCurrentExp
             // 
-            this.txtCurrentExp.Location = new System.Drawing.Point(533, 33);
+            this.txtCurrentExp.Location = new System.Drawing.Point(116, 343);
             this.txtCurrentExp.Name = "txtCurrentExp";
             this.txtCurrentExp.Size = new System.Drawing.Size(318, 20);
             this.txtCurrentExp.TabIndex = 1;
@@ -262,7 +265,7 @@ namespace WindowsFormsApp2
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(457, 36);
+            this.label9.Location = new System.Drawing.Point(40, 346);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(62, 13);
             this.label9.TabIndex = 2;
@@ -288,7 +291,7 @@ namespace WindowsFormsApp2
             // 
             // txtExpValue
             // 
-            this.txtExpValue.Location = new System.Drawing.Point(533, 59);
+            this.txtExpValue.Location = new System.Drawing.Point(116, 369);
             this.txtExpValue.Name = "txtExpValue";
             this.txtExpValue.Size = new System.Drawing.Size(318, 20);
             this.txtExpValue.TabIndex = 1;
@@ -297,7 +300,7 @@ namespace WindowsFormsApp2
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(457, 62);
+            this.label12.Location = new System.Drawing.Point(40, 372);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(55, 13);
             this.label12.TabIndex = 2;
@@ -305,7 +308,7 @@ namespace WindowsFormsApp2
             // 
             // txtCost
             // 
-            this.txtCost.Location = new System.Drawing.Point(533, 85);
+            this.txtCost.Location = new System.Drawing.Point(116, 395);
             this.txtCost.Name = "txtCost";
             this.txtCost.Size = new System.Drawing.Size(318, 20);
             this.txtCost.TabIndex = 1;
@@ -313,7 +316,7 @@ namespace WindowsFormsApp2
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(457, 88);
+            this.label13.Location = new System.Drawing.Point(40, 398);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(28, 13);
             this.label13.TabIndex = 2;
@@ -321,7 +324,7 @@ namespace WindowsFormsApp2
             // 
             // txtRarity
             // 
-            this.txtRarity.Location = new System.Drawing.Point(533, 111);
+            this.txtRarity.Location = new System.Drawing.Point(116, 421);
             this.txtRarity.Name = "txtRarity";
             this.txtRarity.Size = new System.Drawing.Size(318, 20);
             this.txtRarity.TabIndex = 1;
@@ -329,7 +332,7 @@ namespace WindowsFormsApp2
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(457, 114);
+            this.label14.Location = new System.Drawing.Point(40, 424);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(34, 13);
             this.label14.TabIndex = 2;
@@ -337,7 +340,7 @@ namespace WindowsFormsApp2
             // 
             // txtLevel
             // 
-            this.txtLevel.Location = new System.Drawing.Point(533, 137);
+            this.txtLevel.Location = new System.Drawing.Point(116, 447);
             this.txtLevel.Name = "txtLevel";
             this.txtLevel.Size = new System.Drawing.Size(318, 20);
             this.txtLevel.TabIndex = 1;
@@ -345,7 +348,7 @@ namespace WindowsFormsApp2
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(457, 140);
+            this.label15.Location = new System.Drawing.Point(40, 450);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(33, 13);
             this.label15.TabIndex = 2;
@@ -353,7 +356,7 @@ namespace WindowsFormsApp2
             // 
             // txtMaxLvl
             // 
-            this.txtMaxLvl.Location = new System.Drawing.Point(533, 163);
+            this.txtMaxLvl.Location = new System.Drawing.Point(116, 473);
             this.txtMaxLvl.Name = "txtMaxLvl";
             this.txtMaxLvl.Size = new System.Drawing.Size(318, 20);
             this.txtMaxLvl.TabIndex = 1;
@@ -361,7 +364,7 @@ namespace WindowsFormsApp2
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(457, 166);
+            this.label16.Location = new System.Drawing.Point(40, 476);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(53, 13);
             this.label16.TabIndex = 2;
@@ -376,7 +379,7 @@ namespace WindowsFormsApp2
             "Wind"});
             this.txtElement.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.txtElement.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.txtElement.Location = new System.Drawing.Point(533, 189);
+            this.txtElement.Location = new System.Drawing.Point(116, 499);
             this.txtElement.Name = "txtElement";
             this.txtElement.Size = new System.Drawing.Size(318, 20);
             this.txtElement.TabIndex = 1;
@@ -384,7 +387,7 @@ namespace WindowsFormsApp2
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(457, 192);
+            this.label17.Location = new System.Drawing.Point(40, 502);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(45, 13);
             this.label17.TabIndex = 2;
@@ -410,7 +413,7 @@ namespace WindowsFormsApp2
             // btnLoad
             // 
             this.btnLoad.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLoad.Location = new System.Drawing.Point(440, 365);
+            this.btnLoad.Location = new System.Drawing.Point(440, 569);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(146, 53);
             this.btnLoad.TabIndex = 0;
@@ -427,11 +430,22 @@ namespace WindowsFormsApp2
             this.btnImageBrowse.UseVisualStyleBackColor = true;
             this.btnImageBrowse.Click += new System.EventHandler(this.btnImageBrowse_Click);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.pictureBox1.Location = new System.Drawing.Point(455, 33);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(350, 482);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(887, 441);
+            this.ClientSize = new System.Drawing.Size(849, 646);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnImageBrowse);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.btnSave);
@@ -477,6 +491,7 @@ namespace WindowsFormsApp2
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form2";
             this.Load += new System.EventHandler(this.Form2_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -525,5 +540,6 @@ namespace WindowsFormsApp2
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.Button btnImageBrowse;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

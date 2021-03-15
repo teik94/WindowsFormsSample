@@ -54,8 +54,9 @@ namespace WindowsFormsApp2
             if(result == DialogResult.OK)
             {
                 txtImage.Text = dialog.FileName;
-               
             }
+
+            
             //else if (result == DialogResult.Cancel)
             //{
             //    txtImage.Text = "";
@@ -93,6 +94,21 @@ namespace WindowsFormsApp2
             {
                 //txtId.Text = "";
             }
+        }
+
+        private void txtImage_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                TextBox txt = (TextBox)sender;
+                pictureBox1.Image = Image.FromFile(txt.Text);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
     }
 }
