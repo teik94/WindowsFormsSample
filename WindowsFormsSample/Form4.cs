@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace WindowsFormsApp2
         //List<Card> listCard;
         BindingList<Card> listCard = new BindingList<Card>();
         const string savePath = @"C:\KIET\data2.kiet";
-        
+
 
         public Form4()
         {
@@ -27,28 +28,13 @@ namespace WindowsFormsApp2
 
         private void Form4_Load(object sender, EventArgs e)
         {
-            var list = FileControl.ReadTableFromFile(savePath);
+            //var list = FileControl.ReadTableFromFile(savePath);
 
-            this.dataGridView1.AutoGenerateColumns = true;
-            this.dataGridView1.Columns.Clear();
-            
-            if (list != null)
-            {
-                listCard = new BindingList<Card>(list);
-                dataGridView1.DataSource = listCard;
-
-            }
-            else
-            {
-                //listCard = new List<Card>();
-                dataGridView1.DataSource = listCard;
-            }
-            //dataGridView1.Refresh();
 
             DriveInfo[] info = System.IO.DriveInfo.GetDrives();
             foreach (DriveInfo drive in info)
             {
-                if(drive.Name != "C:\\")
+                if (drive.Name != "C:\\")
                 {
                     string folderPath = drive.Name;
 
@@ -58,26 +44,106 @@ namespace WindowsFormsApp2
                     treeView1.Nodes.Add(root);
                 }
             }
-            
+
+
+            ImageList imgList = new ImageList();
+            imgList.Images.Add(Image.FromFile(@"E:\Games\folder-icon.png"));
+            imgList.Images.Add(Image.FromFile(@"E:\Games\file-icon.png"));
+            imgList.Images.Add(Image.FromFile(@"E:\Games\image-file-icon.png"));
+            imgList.ImageSize = new Size(64, 64);
+            listView1.LargeImageList = imgList;
+
+
+
         }
 
-       
+        TreeNode selectedNode;
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            selectedNode = e.Node;
+            string path = e.Node.FullPath.Replace(@"\\", @"\");
+            List<string> files = new List<string>(Directory.GetFiles(path));
+            List<string> subFolders = Directory.EnumerateDirectories(path).ToList();
+            listView1.Items.Clear();
+
+            foreach (string folder in subFolders)
+            {
+                DirectoryInfo di = new DirectoryInfo(folder);
+                ListViewItem item = new ListViewItem();
+                item.Text = di.Name;
+                item.ImageIndex = 0;
+                listView1.Items.Add(item);
+            }
+
+
+            foreach (var file in files)
+            {
+                FileInfo fi = new FileInfo(file);
+                ListViewItem item = new ListViewItem();
+                item.Text = fi.Name;
+                if (fi.Extension == ".jpg")
+                {
+                    item.ImageIndex = 2;
+                }
+                else
+                {
+                    item.ImageIndex = 1;
+                }
+
+                listView1.Items.Add(item);
+            }
+
+        }
+
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (listView1.SelectedItems.Count > 0)
+            {
+                ListViewItem choosen = listView1.SelectedItems[0];
+                if(choosen.ImageIndex == 0)
+                {
+                    //Folder
+                    if (selectedNode != null) selectedNode.Expand();
+                    
+                    foreach (TreeNode node in selectedNode.Nodes)
+                    {
+                        if (node.Text == choosen.Text)
+                        {
+                            treeView1.SelectedNode = node;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    //File
+                    string path = selectedNode.FullPath.Replace(@"\\", @"\");
+                    path = path + @"\" + choosen.Text;
+                    Process myProcess = new Process();
+                    myProcess.StartInfo.FileName = path; //not the full application path
+                    myProcess.Start();
+                }
+            }
+               
+        }
+
 
         public void GetFolder(string folderPath, TreeNode node)
         {
             try
             {
                 List<string> subFolders = Directory.EnumerateDirectories(folderPath).ToList();
-                List<string> files = new List<string>(Directory.GetFiles(folderPath));
+                //List<string> files = new List<string>(Directory.GetFiles(folderPath));
                 foreach (string item in subFolders)
                 {
                     DirectoryInfo di = new DirectoryInfo(item);
                     TreeNode child = node.Nodes.Add(di.Name);
-                    foreach (var file in files)
-                    {
-                       FileInfo fi = new FileInfo(file);
-                        node.Nodes.Add(fi.Name);
-                    }
+                    //foreach (var file in files)
+                    //{
+                    //   //FileInfo fi = new FileInfo(file);
+                    //    //node.Nodes.Add(fi.Name);
+                    //}
                     GetFolder(item, child);
                 }
             }
@@ -85,7 +151,7 @@ namespace WindowsFormsApp2
             {
 
             }
-            
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -93,7 +159,7 @@ namespace WindowsFormsApp2
             Form2 f2 = new Form2();
             f2.ShowDialog();
 
-            if(f2.DialogResult == DialogResult.OK)
+            if (f2.DialogResult == DialogResult.OK)
             {
                 Card card = f2.ReturnValue;
                 listCard.Add(card);
@@ -103,35 +169,10 @@ namespace WindowsFormsApp2
 
         private void btnDeleteRow_Click(object sender, EventArgs e)
         {
-            //DataGridViewRow dr = dataGridView1.se[0];
-            int index = dataGridView1.CurrentCell.RowIndex;
-            dataGridView1.Rows.RemoveAt(index);
-            FileControl.WriteTableToFile(savePath, listCard.ToList());
+
         }
 
-        private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            int index = dataGridView1.CurrentCell.RowIndex;
-            DataGridViewRow dr = dataGridView1.Rows[index];
-            string id = dr.Cells["Id"].Value.ToString();
-            Card card = listCard.Where(x => x.Id == id).FirstOrDefault();
 
-            Form2 f2 = new Form2();
-            f2.InitValue = card;
-            f2.ShowDialog();
-
-            if (f2.DialogResult == DialogResult.OK)
-            {
-                Card newCard = f2.ReturnValue;
-
-                PropertyInfo[] properties = typeof(Card).GetProperties();
-                foreach (PropertyInfo property in properties)
-                {
-                    property.SetValue(card, property.GetValue(newCard));
-                }
-            }
-            FileControl.WriteTableToFile(savePath, listCard.ToList());
-        }
 
         //Timer time;
 
@@ -161,5 +202,7 @@ namespace WindowsFormsApp2
                 timer1.Stop();
             }
         }
+
+        
     }
 }
