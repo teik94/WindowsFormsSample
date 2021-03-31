@@ -14,6 +14,12 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApp2
 {
+    public enum PasteMode
+    {
+        None,
+        Copy,
+        Cut
+    }
     public partial class Form4 : Form
     {
         //List<Card> listCard;
@@ -121,36 +127,7 @@ namespace WindowsFormsApp2
             selectedNode = e.Node;
             string path = e.Node.FullPath.Replace(@"\\", @"\");
             txtPath.Text = path;
-            List<string> files = new List<string>(Directory.GetFiles(path));
-            List<string> subFolders = Directory.EnumerateDirectories(path).ToList();
-            listView1.Items.Clear();
-
-            foreach (string folder in subFolders)
-            {
-                DirectoryInfo di = new DirectoryInfo(folder);
-                ListViewItem item = new ListViewItem();
-                item.Text = di.Name;
-                item.ImageIndex = 0;
-                listView1.Items.Add(item);
-            }
-
-
-            foreach (var file in files)
-            {
-                FileInfo fi = new FileInfo(file);
-                ListViewItem item = new ListViewItem();
-                item.Text = fi.Name;
-                if (fi.Extension == ".jpg")
-                {
-                    item.ImageIndex = 2;
-                }
-                else
-                {
-                    item.ImageIndex = 1;
-                }
-
-                listView1.Items.Add(item);
-            }
+            ListViewRefresh(path);
 
         }
 
@@ -331,5 +308,165 @@ namespace WindowsFormsApp2
 
             return null;
         }
+
+        private void listView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if(e.Button == MouseButtons.Right)
+            {
+                ContextMenuStrip contextMenu = new ContextMenuStrip();
+                contextMenu.Items.Add("Copy");
+                contextMenu.Items.Add("Cut");
+                contextMenu.Items.Add("Delete");
+
+                contextMenu.ItemClicked += ContextMenu_ItemClicked;
+                contextMenu.Show(listView1, e.Location);
+            }
+        }
+
+        //private string CopyItemPath = "";
+        //private string CopyItemName = "";
+        List<CopyItem> copyList = new List<CopyItem>();
+        private PasteMode pasteMode = PasteMode.None;
+        private void ContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            string currentFolder = txtPath.Text;
+            if (e.ClickedItem.Text == "Copy")
+            {
+                pasteMode = PasteMode.Copy;
+                copyList.Clear();
+                foreach (ListViewItem item in listView1.SelectedItems)
+                {
+                    CopyItem copyItem = new CopyItem();
+                    copyItem.ItemPath = item.Name;
+                    copyItem.ItemName = item.Text;
+                    copyList.Add(copyItem);
+                }
+            }
+            else if (e.ClickedItem.Text == "Cut")
+            {
+                pasteMode = PasteMode.Cut;
+                copyList.Clear();
+                foreach (ListViewItem item in listView1.SelectedItems)
+                {
+                    CopyItem copyItem = new CopyItem();
+                    copyItem.ItemPath = item.Name;
+                    copyItem.ItemName = item.Text;
+                    copyList.Add(copyItem);
+                }
+            }
+            else if (e.ClickedItem.Text == "Delete")
+            {
+                if(listView1.SelectedItems.Count > 0)
+                {
+                    foreach (ListViewItem item in listView1.SelectedItems)
+                    {
+                        File.Delete(item.Name);
+                    }
+                        
+                }
+                ListViewRefresh(currentFolder);
+            }
+            else if (e.ClickedItem.Text == "Paste")
+            {
+                if (pasteMode == PasteMode.Copy)
+                {
+                    foreach (var item in copyList)
+                    {
+                        if (File.Exists(currentFolder + "\\" + item.ItemName))
+                        {
+                            FileInfo fi = new FileInfo(currentFolder + "\\" + item.ItemName);
+                            string fileName = Path.GetFileNameWithoutExtension(currentFolder + "\\" + item.ItemName);
+                            item.ItemName = fileName + " (1)" + fi.Extension;
+                        }
+                        File.Copy(item.ItemPath, currentFolder + "\\" + item.ItemName, false);
+                        ListViewRefresh(currentFolder);
+                    }
+                    
+                }
+                else if (pasteMode == PasteMode.Cut)
+                {
+                    foreach (var item in copyList)
+                    {
+                        if (File.Exists(currentFolder + "\\" + item.ItemName))
+                        {
+                            FileInfo fi = new FileInfo(currentFolder + "\\" + item.ItemName);
+                            string fileName = Path.GetFileNameWithoutExtension(currentFolder + "\\" + item.ItemName);
+                            item.ItemName = fileName + " (1)" + fi.Extension;
+                        }
+                        File.Copy(item.ItemPath, currentFolder + "\\" + item.ItemName, false);
+                        File.Delete(item.ItemPath);
+                        ListViewRefresh(currentFolder);
+                    }
+
+                    copyList.Clear();
+                }
+            }
+            else if (e.ClickedItem.Text == "Refresh")
+            {
+                ListViewRefresh(currentFolder);
+            }
+        }
+
+
+        private void listView1_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 0)
+            {
+                if (e.Button == MouseButtons.Right)
+                {
+                    ContextMenuStrip contextMenu = new ContextMenuStrip();
+                    contextMenu.Items.Add("Paste");
+                    contextMenu.Items.Add("Refresh");
+
+                    if(copyList.Count == 0)
+                    {
+                        contextMenu.Items[0].Enabled = false;
+                    }
+                    else
+                    {
+                        contextMenu.Items[0].Enabled = true;
+                    }
+                    
+                    contextMenu.ItemClicked += ContextMenu_ItemClicked;
+                    contextMenu.Show(listView1, e.Location);
+                }
+            }
+        }
+
+        private void ListViewRefresh(string path)
+        {
+            List<string> files = new List<string>(Directory.GetFiles(path));
+            List<string> subFolders = Directory.EnumerateDirectories(path).ToList();
+            listView1.Items.Clear();
+
+            foreach (string folder in subFolders)
+            {
+                DirectoryInfo di = new DirectoryInfo(folder);
+                ListViewItem item = new ListViewItem();
+                item.Text = di.Name;
+                item.Name = di.FullName;
+                item.ImageIndex = 0;
+                listView1.Items.Add(item);
+            }
+
+
+            foreach (var file in files)
+            {
+                FileInfo fi = new FileInfo(file);
+                ListViewItem item = new ListViewItem();
+                item.Text = fi.Name;
+                if (fi.Extension == ".jpg")
+                {
+                    item.ImageIndex = 2;
+                }
+                else
+                {
+                    item.ImageIndex = 1;
+                }
+                item.Name = fi.FullName;
+                listView1.Items.Add(item);
+            }
+        }
+
     }
 }
