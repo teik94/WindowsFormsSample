@@ -29,6 +29,7 @@ namespace WindowsFormsApp2
         TreeNode selectedNode;
         List<TreeNode> lastNode = new List<TreeNode>();
         List<TreeNode> nextNode = new List<TreeNode>();
+        ImageList imgList = new ImageList();
 
         public Form4()
         {
@@ -57,12 +58,13 @@ namespace WindowsFormsApp2
             }
 
 
-            ImageList imgList = new ImageList();
-            imgList.Images.Add(Image.FromFile(@".\Resources\Icon\folder-icon.png"));
-            imgList.Images.Add(Image.FromFile(@".\Resources\Icon\file-icon.png"));
-            imgList.Images.Add(Image.FromFile(@".\Resources\Icon\image-file-icon.png"));
-            imgList.ImageSize = new Size(64, 64);
+            //ImageList imgList = new ImageList();
+            this.imgList.Images.Add(Image.FromFile(@".\resources\icon\folder-icon.png"));
+            this.imgList.Images.Add(Image.FromFile(@".\resources\icon\file-icon.png"));
+            this.imgList.Images.Add(Image.FromFile(@".\resources\icon\image-file-icon.png"));
+            this.imgList.ImageSize = new Size(64, 64);
             listView1.LargeImageList = imgList;
+            //listView1.SmallImageList = imgList;
 
             treeView1.SelectedNode = treeView1.Nodes[0];
             lastNode.Add(treeView1.SelectedNode);
@@ -133,14 +135,20 @@ namespace WindowsFormsApp2
 
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+
+            OpenFile();
+        }
+
+        public void OpenFile()
+        {
             if (listView1.SelectedItems.Count > 0)
             {
                 ListViewItem choosen = listView1.SelectedItems[0];
-                if(choosen.ImageIndex == 0)
+                if (choosen.ImageKey == "Folder")
                 {
                     //Folder
                     if (selectedNode != null) selectedNode.Expand();
-                    
+
                     foreach (TreeNode node in selectedNode.Nodes)
                     {
                         if (node.Text == choosen.Text)
@@ -161,7 +169,7 @@ namespace WindowsFormsApp2
                     myProcess.Start();
                 }
             }
-               
+            
         }
 
 
@@ -171,6 +179,7 @@ namespace WindowsFormsApp2
             {
                 List<string> subFolders = Directory.EnumerateDirectories(folderPath).ToList();
                 //List<string> files = new List<string>(Directory.GetFiles(folderPath));
+
                 foreach (string item in subFolders)
                 {
                     DirectoryInfo di = new DirectoryInfo(item);
@@ -314,6 +323,7 @@ namespace WindowsFormsApp2
             if(e.Button == MouseButtons.Right)
             {
                 ContextMenuStrip contextMenu = new ContextMenuStrip();
+                contextMenu.Items.Add("Open");
                 contextMenu.Items.Add("Copy");
                 contextMenu.Items.Add("Cut");
                 contextMenu.Items.Add("Delete");
@@ -405,6 +415,10 @@ namespace WindowsFormsApp2
             {
                 ListViewRefresh(currentFolder);
             }
+            else if(e.ClickedItem.Text == "Open")
+            {
+                OpenFile();
+            }
         }
 
 
@@ -438,35 +452,68 @@ namespace WindowsFormsApp2
             List<string> files = new List<string>(Directory.GetFiles(path));
             List<string> subFolders = Directory.EnumerateDirectories(path).ToList();
             listView1.Items.Clear();
+            
+            //item = new ListViewItem(file.Name, 1);
 
+
+            //FOLDER
             foreach (string folder in subFolders)
             {
                 DirectoryInfo di = new DirectoryInfo(folder);
                 ListViewItem item = new ListViewItem();
                 item.Text = di.Name;
                 item.Name = di.FullName;
-                item.ImageIndex = 0;
+                //item.ImageIndex = 0;
+
+                Icon folderIcon = ShellIcon.GetLargeFolderIcon();
+                //Icon folderIcon = IconReader.GetFolderIcon(IconReader.IconSize.Large, IconReader.FolderType.Open);
+                imgList.Images.Add("Folder", folderIcon);
+
+                item.ImageKey = "Folder";
                 listView1.Items.Add(item);
             }
 
-
+            //FILES
             foreach (var file in files)
             {
                 FileInfo fi = new FileInfo(file);
                 ListViewItem item = new ListViewItem();
                 item.Text = fi.Name;
-                if (fi.Extension == ".jpg")
+                item.Name = fi.FullName;
+
+                if(fi.Extension == ".exe")
                 {
-                    item.ImageIndex = 2;
+                    if (!imgList.Images.ContainsKey(fi.FullName))
+                    {
+                        // If not, add the image to the image list.
+                        //Icon iconForFile = System.Drawing.Icon.ExtractAssociatedIcon(fi.FullName);
+                        //Icon iconForFile = ShellIcon.GetLargeIcon(fi.FullName);
+                        //Icon iconForFile = IconReader.GetFileIcon(fi.FullName, IconReader.IconSize.Large, false);
+                        Icon iconForFile = FileToIconConverter.GetFileIcon(fi.FullName, FileToIconConverter.IconSize.extraLarge);
+                        imgList.Images.Add(fi.FullName, iconForFile);
+                    }
+                    item.ImageKey = fi.FullName;
                 }
                 else
                 {
-                    item.ImageIndex = 1;
+                    if (!imgList.Images.ContainsKey(fi.Extension))
+                    {
+                        // If not, add the image to the image list.
+                        //iconForFile = System.Drawing.Icon.ExtractAssociatedIcon(fi.FullName);
+                        //Icon iconForFile = ShellIcon.GetLargeIcon(fi.FullName);
+                        //Icon iconForFile = IconReader.GetFileIcon(fi.FullName, IconReader.IconSize.Large, false);
+                        Icon iconForFile = FileToIconConverter.GetFileIcon(fi.FullName, FileToIconConverter.IconSize.extraLarge);
+                        imgList.Images.Add(fi.Extension, iconForFile);
+                    }
+                    item.ImageKey = fi.Extension;
                 }
-                item.Name = fi.FullName;
                 listView1.Items.Add(item);
             }
         }
 
+        private void treeView1_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
+        {
+
+        }
     }
 }
